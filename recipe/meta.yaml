@@ -24,6 +24,7 @@ requirements:
     - jsonpickle >=1.0
     - ordered-set >=3.1
     - python >=3.4
+    - mmh3
 
 test:
   imports:
