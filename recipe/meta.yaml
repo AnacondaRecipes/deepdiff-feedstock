@@ -9,6 +9,8 @@ package:
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256 }}
+  patches:  # [win]
+    - patches/0001-Fix-encoding-error-on-Windows.patch  # [win]
 
 build:
   number: 0
@@ -17,10 +19,13 @@ build:
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
+  build:
+    - m2-patch  # [win]
   host:
     - pip
     - python
     - wheel
+    - setuptools
   run:
     - ordered-set >=4.0.2,<4.2.0
     - orjson
@@ -42,7 +47,7 @@ test:
   commands:
     - pip check
     # Skip tests known to fail: https://github.com/seperman/deepdiff/issues/323
-    - pytest -v tests -k 'not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree)'
+    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree)"
   imports:
     - deepdiff
 
