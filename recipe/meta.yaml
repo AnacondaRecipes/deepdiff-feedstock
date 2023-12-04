@@ -7,29 +7,41 @@ package:
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256 }}
 
 build:
-  noarch: python
   number: 0
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
   host:
     - pip
-    - python >=3.7
+    - python
+    - wheel
   run:
-    - ordered-set >=4.1.0,<4.2.0
+    - ordered-set >=4.0.2,<4.2.0
     - orjson
-    - python >=3.7
+    - python
 
 test:
+  source_files:
+    - tests
+    - conftest.py
   requires:
     - pip
+    - pytest
+    - click
+    - numpy
+    - pyyaml
+    - python-dateutil
+    - pydantic
+    - tomli-w
   commands:
     - pip check
+    # Skip tests known to fail: https://github.com/seperman/deepdiff/issues/323
+    - pytest -v tests -k 'not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree)'
   imports:
     - deepdiff
 
