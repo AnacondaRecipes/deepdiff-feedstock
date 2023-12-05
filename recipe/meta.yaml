@@ -60,7 +60,7 @@ about:
   description: |
     Deep Difference of dictionaries, iterables, strings and other objects. 
     It will recursively look for all the changes.
-  doc_url: http://deepdiff.readthedocs.io/en/latest/
+  doc_url: https://deepdiff.readthedocs.io
   dev_url: https://github.com/seperman/deepdiff
 
 extra:
