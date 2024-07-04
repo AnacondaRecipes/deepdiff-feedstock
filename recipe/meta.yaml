@@ -13,7 +13,7 @@ source:
     - patches/0001-Fix-encoding-error-on-Windows.patch  # [win]
 
 build:
-  number: 0
+  number: 1
   # orjson is not available on s390x
   skip: true  # [py<37 or s390x]
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
