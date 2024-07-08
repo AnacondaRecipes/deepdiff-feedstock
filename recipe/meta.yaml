@@ -16,6 +16,8 @@ build:
   number: 0
   # orjson is not available on s390x
   skip: true  # [py<37 or s390x]
+  entry_points:
+    - deep = deepdiff.commands:cli
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
 
 requirements:
