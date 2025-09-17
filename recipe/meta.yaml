@@ -24,10 +24,8 @@ requirements:
   build:
     - m2-patch  # [win]
   host:
-    - pip
     - python
-    - wheel
-    - setuptools
+    - pip
     - flit-core >=3.11,<4
   run:
     - orderly-set >=5.4.1,<6
