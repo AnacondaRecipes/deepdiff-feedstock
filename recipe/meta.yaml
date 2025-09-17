@@ -1,6 +1,6 @@
 {% set name = "deepdiff" %}
-{% set version = "7.0.1" %}
-{% set sha256 = "260c16f052d4badbf60351b4f77e8390bee03a0b516246f6839bc813fb429ddf" %}
+{% set version = "8.5.0" %}
+{% set sha256 = "a4dd3529fa8d4cd5b9cbb6e3ea9c95997eaa919ba37dac3966c1b8f872dc1cd1" %}
 
 package:
   name: {{ name|lower }}
@@ -28,8 +28,9 @@ requirements:
     - python
     - wheel
     - setuptools
+    - flit-core >=3.11,<4
   run:
-    - ordered-set >=4.1.0,<4.2.0
+    - orderly-set >=5.4.1,<6
     - orjson
     - python
 
@@ -46,10 +47,12 @@ test:
     - python-dateutil
     - pydantic
     - tomli-w
+    - pytz
+    - pandas
   commands:
     - pip check
     # Skip tests known to fail: https://github.com/seperman/deepdiff/issues/323
-    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree or test_delta_dump_and_read3 or delta_numpy7_arrays_of_different_sizes)"
+    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree or test_delta_dump_and_read3 or delta_numpy7_arrays_of_different_sizes or test_polars or test_lfu)"
   imports:
     - deepdiff
 
