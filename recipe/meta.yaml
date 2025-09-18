@@ -1,6 +1,5 @@
 {% set name = "deepdiff" %}
 {% set version = "8.5.0" %}
-{% set sha256 = "a4dd3529fa8d4cd5b9cbb6e3ea9c95997eaa919ba37dac3966c1b8f872dc1cd1" %}
 
 package:
   name: {{ name|lower }}
@@ -8,9 +7,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
-  patches:  # [win]
-    - patches/0001-Fix-encoding-error-on-Windows.patch  # [win]
+  sha256: a4dd3529fa8d4cd5b9cbb6e3ea9c95997eaa919ba37dac3966c1b8f872dc1cd1
 
 build:
   number: 0
