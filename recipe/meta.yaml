@@ -32,10 +32,6 @@ test:
     - conftest.py
   imports:
     - deepdiff
-  commands:
-    - pip check
-    # Skip tests known to fail: https://github.com/seperman/deepdiff/issues/323
-    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree or test_delta_dump_and_read3 or delta_numpy7_arrays_of_different_sizes or test_diff_command)"
   requires:
     - pip
     - pytest
