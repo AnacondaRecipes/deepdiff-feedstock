@@ -1,5 +1,5 @@
 {% set name = "deepdiff" %}
-{% set version = "7.0.1" %}
+{% set version = "8.5.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,27 +7,22 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 260c16f052d4badbf60351b4f77e8390bee03a0b516246f6839bc813fb429ddf
-  patches:  # [win]
-    - patches/0001-Fix-encoding-error-on-Windows.patch  # [win]
+  sha256: a4dd3529fa8d4cd5b9cbb6e3ea9c95997eaa919ba37dac3966c1b8f872dc1cd1
 
 build:
-  number: 1
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+  skip: true  # [py<39]
   entry_points:
     - deep = deepdiff.commands:cli
-  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
-  build:
-    - msys2-patch  # [win]
   host:
-    - pip
     - python
-    - wheel
-    - setuptools
+    - pip
+    - flit-core >=3.11,<4
   run:
-    - ordered-set >=4.1.0,<4.2.0
+    - orderly-set >=5.4.1,<6
     - orjson
     - python
 
@@ -37,10 +32,6 @@ test:
     - conftest.py
   imports:
     - deepdiff
-  commands:
-    - pip check
-    # Skip tests known to fail: https://github.com/seperman/deepdiff/issues/323
-    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree or test_delta_dump_and_read3 or delta_numpy7_arrays_of_different_sizes or test_diff_command)"
   requires:
     - pip
     - pytest
@@ -50,6 +41,13 @@ test:
     - python-dateutil
     - pydantic
     - tomli-w
+    - pytz
+    - pandas
+  commands:
+    - pip check
+    # Skip tests known to fail: https://github.com/seperman/deepdiff/issues/323
+    # Skip polars as not available on defaults at time of update - test_lfu is a benchmark for development
+    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree or test_delta_dump_and_read3 or delta_numpy7_arrays_of_different_sizes or test_polars or test_lfu)"
 
 about:
   home: https://github.com/seperman/deepdiff
