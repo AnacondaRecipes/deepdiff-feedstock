@@ -47,7 +47,9 @@ test:
     - pip check
     # Skip tests known to fail: https://github.com/seperman/deepdiff/issues/323
     # Skip polars as not available on defaults at time of update - test_lfu is a benchmark for development
-    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree or test_delta_dump_and_read3 or delta_numpy7_arrays_of_different_sizes or test_polars or test_lfu)"
+    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree or test_delta_dump_and_read3 or delta_numpy7_arrays_of_different_sizes or test_polars or test_lfu)"  # [not (osx and arm64)]
+    # Skipping test_repeated_timer on osx-arm64 because it's flaky
+    - pytest -v tests -k "not (test_serialization_text or test_deserialization or test_serialization_tree or test_deserialization_tree or test_delta_dump_and_read3 or delta_numpy7_arrays_of_different_sizes or test_polars or test_lfu or test_repeated_timer)"  # [osx and arm64]
 
 about:
   home: https://github.com/seperman/deepdiff
