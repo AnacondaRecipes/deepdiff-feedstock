@@ -68,7 +68,7 @@ test:
     - pip check
     - deep --help
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest -v tests # [py<314]
+    - pytest -v tests {{ ignore_tests }} {{ deselect_tests }}  # [py<314]
 
 about:
   home: https://github.com/seperman/deepdiff
