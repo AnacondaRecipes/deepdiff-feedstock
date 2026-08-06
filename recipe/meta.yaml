@@ -1,13 +1,38 @@
 {% set name = "deepdiff" %}
 {% set version = "9.1.0" %}
-{% set ignore_tests = " --ignore=tests/test_serialization.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/test_summarize.py" %}
-{% set deselect_tests = "--deselect=tests/test_delta.py::TestBasicsOfDelta::test_delta_repr" %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_delta.py::TestDeltaCompareFunc::test_list_of_alphabet_and_its_delta"' %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_hash.py::TestDeepHash::test_deephash_repr"' %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_model.py::TestDiffLevel::test_repetition_attribute_and_repr"' %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_diff_other.py::TestDiffOther::test_repeated_timer"' %}
-{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_security.py::TestDeltaClassPollution::test_remote_code_execution"' %}  # [win]
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 07e9e366fab4297755153c4eab795ad4ef3cbd0d51660e847f5751c6bd727687
+
+build:
+  number: 0
+  skip: true  # [py<310]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  entry_points:
+    - deep = deepdiff.commands:cli
+
+requirements:
+  host:
+    - python
+    - pip
+    - flit-core >=3.11,<4
+  run:
+    - python
+    - cachebox >=5.2,<6
+    - orderly-set >=5.5.0,<6
+  run_constrained:
+    # cli
+    - click >=8.3.1,<9.0.0
+    - pyyaml >=6.0.3,<8.0.0
+    # static
+    - flake8 >=7.3.0,<8.0.0
+    - flake8-pyproject >=1.2.4,<2.0.0
+    - pydantic >=2.12.5,<3.0.0
 
 # https://github.com/seperman/deepdiff/issues/574
 # E   TypeError: tests.test_serialization.SomeStats() argument after ** must be a mapping, not list
@@ -19,32 +44,14 @@
 # E       assert '<root {"repe...repetition"}>' == '<root {"repe...repetition"}>'
 # >       assert PROGRESS_MSG.format(0, 0, 0) == progress_logger.call_args[0][0]
 # >       assert "Module 'posix.system' is forbidden. You need to explicitly pass it by passing a safe_to_import parameter" == str(exc_info.value)
-package:
-  name: {{ name|lower }}
-  version: {{ version }}
-
-source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 07e9e366fab4297755153c4eab795ad4ef3cbd0d51660e847f5751c6bd727687
-
-build:
-  number: 0
-  skip: true  # [py<39]
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  entry_points:
-    - deep = deepdiff.commands:cli
-
-requirements:
-  host:
-    - python
-    - pip
-    - flit-core >=3.11,<4
-  run:
-    - orderly-set >=5.4.1,<6
-    - python
-  run_constrained:
-    - click >=8.1.0,<9.0.0
-    - pyyaml >=6.0.0,<8.0.0
+{% set ignore_tests = " --ignore=tests/test_serialization.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/test_summarize.py" %}
+{% set deselect_tests = "--deselect=tests/test_delta.py::TestBasicsOfDelta::test_delta_repr" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_delta.py::TestDeltaCompareFunc::test_list_of_alphabet_and_its_delta" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_hash.py::TestDeepHash::test_deephash_repr" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_model.py::TestDiffLevel::test_repetition_attribute_and_repr" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_diff_other.py::TestDiffOther::test_repeated_timer" %}
+{% set deselect_tests = deselect_tests + " --deselect=tests/test_security.py::TestDeltaClassPollution::test_remote_code_execution" %}  # [win]
 
 test:
   source_files:
@@ -70,7 +77,7 @@ test:
     - pip check
     - deep --help
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest tests {{ ignore_tests }} {{ deselect_tests }}
+    - pytest -vv tests {{ ignore_tests }} {{ deselect_tests }}
 
 about:
   home: https://github.com/seperman/deepdiff
@@ -90,5 +97,3 @@ extra:
     - seperman
     - synapticarbors
 
-<conda_recipe_manager.types.SentinelType object at 0x7f79a580e270>:  # E       assert '<Delta: {"iterable_item_added": {"root[2]": 3, "root[3]": 5}}>' in {'<Delta: {"iterable_item_added":{"root[2]":3,"root[3]":5}}>',
-  # '<Delta: {"iterable_item_added":{"root[3]":5,"root[2]":3}}>'}
