@@ -1,17 +1,17 @@
 {% set name = "deepdiff" %}
-{% set version = "8.6.2" %}
+{% set version = "9.1.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 186dcbd181e4d76cef11ab05f802d0056c5d6083c5a6748c1473e9d7481e183e
+  sha256: 07e9e366fab4297755153c4eab795ad4ef3cbd0d51660e847f5751c6bd727687
 
 build:
   number: 0
-  skip: true  # [py<39]
+  skip: true  # [py<310]
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   entry_points:
     - deep = deepdiff.commands:cli
@@ -22,11 +22,17 @@ requirements:
     - pip
     - flit-core >=3.11,<4
   run:
-    - orderly-set >=5.4.1,<6
     - python
+    - cachebox >=5.2,<6
+    - orderly-set >=5.5.0,<6
   run_constrained:
-    - click >=8.1.0,<9.0.0
-    - pyyaml >=6.0.0,<8.0.0
+    # cli
+    - click >=8.3.1,<9.0.0
+    - pyyaml >=6.0.3,<8.0.0
+    # static
+    - flake8 >=7.3.0,<8.0.0
+    - flake8-pyproject >=1.2.4,<2.0.0
+    - pydantic >=2.12.5,<3.0.0
 
 # https://github.com/seperman/deepdiff/issues/574
 # E   TypeError: tests.test_serialization.SomeStats() argument after ** must be a mapping, not list
@@ -35,7 +41,7 @@ requirements:
 # E       assert 344 == 319
 {% set ignore_tests = ignore_tests + " --ignore=tests/test_summarize.py" %}
 # E       assert '<Delta: {"iterable_item_added": {"root[2]": 3, "root[3]": 5}}>' in {'<Delta: {"iterable_item_added":{"root[2]":3,"root[3]":5}}>', 
-  # '<Delta: {"iterable_item_added":{"root[3]":5,"root[2]":3}}>'}
+# '<Delta: {"iterable_item_added":{"root[3]":5,"root[2]":3}}>'}
 {% set deselect_tests = "--deselect=tests/test_delta.py::TestBasicsOfDelta::test_delta_repr" %}
 # E   TypeError: deepdiff.helper.Opcode() argument after ** must be a mapping, not list
 # https://github.com/seperman/deepdiff/issues/482
@@ -73,7 +79,7 @@ test:
     - pip check
     - deep --help
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
-    - pytest tests {{ ignore_tests }} {{ deselect_tests }}
+    - pytest -vv tests {{ ignore_tests }} {{ deselect_tests }}
 
 about:
   home: https://github.com/seperman/deepdiff
@@ -82,7 +88,7 @@ about:
   license_file: LICENSE
   license_family: MIT
   description: |
-    Deep Difference of dictionaries, iterables, strings and other objects. 
+    Deep Difference of dictionaries, iterables, strings and other objects.
     It will recursively look for all the changes.
   doc_url: https://deepdiff.readthedocs.io
   dev_url: https://github.com/seperman/deepdiff
@@ -92,3 +98,4 @@ extra:
     - loriab
     - seperman
     - synapticarbors
+
